@@ -1,7 +1,8 @@
 //Dependencies
 import express from 'express';
 import bodyParser from 'body-parser';
-import fs from 'fs';
+//import fs from 'fs';
+import mysql from 'mysql';
 
 //Declarations
 const app = express();
@@ -20,20 +21,33 @@ const router = express.Router();
 
 //register routes
 router.get('/home', (request, response) => {
-    response.send('Hello world!');
+  response.send('Hello world!');
 });
 
-const stream = fs.createWriteStream("output.txt", { flags: 'a' });
+//const stream = fs.createWriteStream("output.txt", { flags: 'a' });
+
+const con = mysql.createConnection({
+  host: "35.201.17.69",
+  user: "test",
+  password: "test",
+  database: "perfDB"
+});
 
 router.post('/process', (request, response) => {
-    var myPromise = new Promise((resolve, reject) => {
-        setTimeout(() => { resolve('result from promise') }, 5000);
-    });
+  var myPromise = new Promise((resolve, reject) => {
+    setTimeout(() => { resolve('result from promise') }, 5000);
+  });
 
-    myPromise.then((result) => {
-        stream.write(result + "\n");
-        response.send(result);
+  myPromise.then((result) => {
+    con.query('SELECT 1', (error, results, fields) => {
+      if (error) {
+        response.status(400);
+        response.send(error);
+      }
+      response.send(results);
     })
+    //stream.write(result + "\n");
+  })
 });
 
 // all routes will be prefixed with /api

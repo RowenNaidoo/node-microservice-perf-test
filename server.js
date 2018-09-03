@@ -8,14 +8,16 @@ var _bodyParser = require('body-parser');
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
-var _fs = require('fs');
+var _mysql = require('mysql');
 
-var _fs2 = _interopRequireDefault(_fs);
+var _mysql2 = _interopRequireDefault(_mysql);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //Declarations
-var app = (0, _express2.default)(); //Dependencies
+var app = (0, _express2.default)();
+//import fs from 'fs';
+//Dependencies
 
 app.disable('etag').disable('x-powered-by');
 
@@ -32,22 +34,35 @@ var router = _express2.default.Router();
 
 //register routes
 router.get('/home', function (request, response) {
-    response.send('Hello world!');
+  response.send('Hello world!');
 });
 
-var stream = _fs2.default.createWriteStream("output.txt", { flags: 'a' });
+//const stream = fs.createWriteStream("output.txt", { flags: 'a' });
+
+var con = _mysql2.default.createConnection({
+  host: "35.201.17.69",
+  user: "test",
+  password: "test",
+  database: "perfDB"
+});
 
 router.post('/process', function (request, response) {
-    var myPromise = new Promise(function (resolve, reject) {
-        setTimeout(function () {
-            resolve('result from promise');
-        }, 5000);
-    });
+  var myPromise = new Promise(function (resolve, reject) {
+    setTimeout(function () {
+      resolve('result from promise');
+    }, 5000);
+  });
 
-    myPromise.then(function (result) {
-        stream.write(result + "\n");
-        response.send(result);
+  myPromise.then(function (result) {
+    con.query('SELECT 1', function (error, results, fields) {
+      if (error) {
+        response.status(400);
+        response.send(error);
+      }
+      response.send(results);
     });
+    //stream.write(result + "\n");
+  });
 });
 
 // all routes will be prefixed with /api

@@ -7,14 +7,15 @@
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "babel -d ./  ./src",
-    "run-server": "node ./lib/server.js"
+    "run-server": "node server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.2",
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "mysql": "^2.16.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
