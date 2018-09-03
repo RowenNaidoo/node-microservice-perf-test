@@ -8,11 +8,15 @@ var _bodyParser = require('body-parser');
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
+var _fs = require('fs');
+
+var _fs2 = _interopRequireDefault(_fs);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //Declarations
-//Dependencies
-var app = (0, _express2.default)();
+var app = (0, _express2.default)(); //Dependencies
+
 app.disable('etag').disable('x-powered-by');
 
 // configure app to use bodyParser()
@@ -31,6 +35,8 @@ router.get('/home', function (request, response) {
     response.send('Hello world!');
 });
 
+var stream = _fs2.default.createWriteStream("output.txt", { flags: 'a' });
+
 router.post('/process', function (request, response) {
     var myPromise = new Promise(function (resolve, reject) {
         setTimeout(function () {
@@ -39,6 +45,7 @@ router.post('/process', function (request, response) {
     });
 
     myPromise.then(function (result) {
+        stream.write(result + "\n");
         response.send(result);
     });
 });

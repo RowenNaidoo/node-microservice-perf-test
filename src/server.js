@@ -1,6 +1,7 @@
 //Dependencies
 import express from 'express';
 import bodyParser from 'body-parser';
+import fs from 'fs';
 
 //Declarations
 const app = express();
@@ -22,12 +23,15 @@ router.get('/home', (request, response) => {
     response.send('Hello world!');
 });
 
+const stream = fs.createWriteStream("output.txt", { flags: 'a' });
+
 router.post('/process', (request, response) => {
     var myPromise = new Promise((resolve, reject) => {
         setTimeout(() => { resolve('result from promise') }, 5000);
     });
 
     myPromise.then((result) => {
+        stream.write(result + "\n");
         response.send(result);
     })
 });
