@@ -48,21 +48,19 @@ var pool = _mysql2.default.createPool({
 });
 
 router.post('/process', function (request, response) {
-  var myPromise = new Promise(function (resolve, reject) {
-    setTimeout(function () {
-      resolve('result from promise');
-    }, 5000);
-  });
+  //var myPromise = new Promise((resolve, reject) => {
+  //  setTimeout(() => { resolve('result from promise') }, 5000);
+  //});
 
-  myPromise.then(function (result) {
-    pool.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
-      if (error) {
-        response.status(400).send(error);
-      }
-      response.send(results);
-    });
-    //stream.write(result + "\n");
+  //myPromise.then((result) => {
+  pool.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
+    if (error) {
+      response.status(400).send(error);
+    }
+    response.send(results);
   });
+  //stream.write(result + "\n");
+  //})
 });
 
 // all routes will be prefixed with /api
