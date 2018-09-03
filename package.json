@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "npm run compile && npm run run-server",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "compile": "babel -d ./lib  ./src",
-    "run-server": "node ./lib/server.js",
-    "start": "npm run compile && npm run run-server"
+    "compile": "babel -d ./  ./src",
+    "run-server": "node ./lib/server.js"
   },
   "keywords": [],
   "author": "",
