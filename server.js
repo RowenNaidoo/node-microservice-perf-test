@@ -39,7 +39,8 @@ router.get('/home', function (request, response) {
 
 //const stream = fs.createWriteStream("output.txt", { flags: 'a' });
 
-var con = _mysql2.default.createConnection({
+var pool = _mysql2.default.createPool({
+  connectionLimit: 10,
   host: "35.201.17.69",
   user: "test",
   password: "test",
@@ -54,10 +55,9 @@ router.post('/process', function (request, response) {
   });
 
   myPromise.then(function (result) {
-    con.query('SELECT 1', function (error, results, fields) {
+    pool.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
       if (error) {
-        response.status(400);
-        response.send(error);
+        response.status(400).send(error);
       }
       response.send(results);
     });

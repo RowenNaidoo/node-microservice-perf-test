@@ -26,7 +26,8 @@ router.get('/home', (request, response) => {
 
 //const stream = fs.createWriteStream("output.txt", { flags: 'a' });
 
-const con = mysql.createConnection({
+const pool = mysql.createPool({
+  connectionLimit: 10,
   host: "35.201.17.69",
   user: "test",
   password: "test",
@@ -39,10 +40,9 @@ router.post('/process', (request, response) => {
   });
 
   myPromise.then((result) => {
-    con.query('SELECT 1', (error, results, fields) => {
+    pool.query('SELECT 1 + 1 AS solution', (error, results, fields) => {
       if (error) {
-        response.status(400);
-        response.send(error);
+        response.status(400).send(error);
       }
       response.send(results);
     })
