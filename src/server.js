@@ -28,7 +28,8 @@ router.get('/home', (request, response) => {
 
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "35.201.17.69",
+  //host: "35.201.17.69",
+  host: "node-microservice-perf:australia-southeast1:nodemsperf",
   user: "test",
   password: "test",
   database: "perfDB"
