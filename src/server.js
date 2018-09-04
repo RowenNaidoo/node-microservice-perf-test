@@ -1,7 +1,7 @@
 //Dependencies
 import express from 'express';
 import bodyParser from 'body-parser';
-//import fs from 'fs';
+import fs from 'fs';
 import mysql from 'mysql';
 
 //Declarations
@@ -24,30 +24,45 @@ router.get('/home', (request, response) => {
   response.send('Hello world!');
 });
 
-//const stream = fs.createWriteStream("output.txt", { flags: 'a' });
+const stream = fs.createWriteStream("output.txt", { flags: 'a' });
 
 const pool = mysql.createPool({
   connectionLimit: 10,
-  //host: "35.201.17.69",
-  host: "node-microservice-perf:australia-southeast1:nodemsperf",
+  host: "35.201.17.69",
+  instance: "node-microservice-perf:australia-southeast1:nodemsperf",
   user: "test",
   password: "test",
   database: "perfDB"
 });
 
-router.post('/process', (request, response) => {
-  //var myPromise = new Promise((resolve, reject) => {
-  //  setTimeout(() => { resolve('result from promise') }, 5000);
-  //});
+router.post('/processDB', (request, response) => {
 
-  //myPromise.then((result) => {
   pool.query('SELECT 1 + 1 AS solution', (error, results, fields) => {
     if (error) {
       response.status(400).send(error);
     }
     response.send(results);
   })
-  //stream.write(result + "\n");
+
+});
+
+router.post('/processFile', (request, response) => {
+  //var myPromise = new Promise((resolve, reject) => {
+  //  setTimeout(() => { resolve('result from promise') }, 5000);
+  //});
+
+  //myPromise.then((result) => {
+  /*pool.query('SELECT 1 + 1 AS solution', (error, results, fields) => {
+    if (error) {
+      response.status(400).send(error);
+    }
+    response.send(results);
+  })*/
+  const result = "the very long string";
+  stream.write(result + "\n", 'utf8', () => {
+    response.send(result);
+  });
+
   //})
 });
 
