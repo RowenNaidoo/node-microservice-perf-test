@@ -34,25 +34,24 @@ var port = process.env.PORT || 8080;
 //get instance of express router
 var router = _express2.default.Router();
 
-//register routes
-router.get('/home', function (request, response) {
-  response.send('Hello world!');
-});
-
 var stream = _fs2.default.createWriteStream("output.txt", { flags: 'a' });
 
 var pool = _mysql2.default.createPool({
   connectionLimit: 10,
   host: "35.201.17.69",
-  instance: "node-microservice-perf:australia-southeast1:nodemsperf",
   user: "test",
   password: "test",
-  database: "perfDB"
+  database: "world"
 });
 
-router.post('/processDB', function (request, response) {
+//register routes
+router.get('/home', function (request, response) {
+  response.send('Hello world!');
+});
 
-  pool.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
+router.post('/dbRead', function (request, response) {
+
+  pool.query('SELECT * FROM world.city', function (error, results, fields) {
     if (error) {
       response.status(400).send(error);
     }
@@ -60,18 +59,37 @@ router.post('/processDB', function (request, response) {
   });
 });
 
-router.post('/processFile', function (request, response) {
-  //var myPromise = new Promise((resolve, reject) => {
-  //  setTimeout(() => { resolve('result from promise') }, 5000);
-  //});
+router.post('/dbWrite', function (request, response) {
 
-  //myPromise.then((result) => {
-  /*pool.query('SELECT 1 + 1 AS solution', (error, results, fields) => {
+  pool.query('INSERT INTO perfTest(Value) VALUES ("some random text")', function (error, results, fields) {
     if (error) {
       response.status(400).send(error);
     }
     response.send(results);
-  })*/
+  });
+});
+
+router.post('/dbReadWrite', function (request, response) {
+
+  pool.query('SELECT * FROM world.city', function (error, results, fields) {
+    if (error) {
+      response.status(400).send(error);
+    }
+    pool.query('SELECT * FROM world.city', function (error, results, fields) {
+      if (error) {
+        response.status(400).send(error);
+      }
+      pool.query('INSERT INTO perfTest(Value) VALUES ("some other random text")', function (error, results, fields) {
+        if (error) {
+          response.status(400).send(error);
+        }
+        response.status(200).send("OK");
+      });
+    });
+  });
+});
+
+router.post('/file', function (request, response) {
   var result = "the very long string";
   stream.write(result + "\n", 'utf8', function () {
     response.send(result);

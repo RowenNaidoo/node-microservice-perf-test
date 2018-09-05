@@ -19,11 +19,6 @@ const port = process.env.PORT || 8080;
 //get instance of express router
 const router = express.Router();
 
-//register routes
-router.get('/home', (request, response) => {
-  response.send('Hello world!');
-});
-
 const stream = fs.createWriteStream("output.txt", { flags: 'a' });
 
 const pool = mysql.createPool({
@@ -32,6 +27,11 @@ const pool = mysql.createPool({
   user: "test",
   password: "test",
   database: "world"
+});
+
+//register routes
+router.get('/home', (request, response) => {
+  response.send('Hello world!');
 });
 
 router.post('/dbRead', (request, response) => {
