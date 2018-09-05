@@ -34,7 +34,7 @@ const pool = mysql.createPool({
   database: "world"
 });
 
-router.post('dbRead', (request, response) => {
+router.post('/dbRead', (request, response) => {
 
   pool.query('SELECT * FROM world.city', (error, results, fields) => {
     if (error) {
@@ -45,7 +45,7 @@ router.post('dbRead', (request, response) => {
 
 });
 
-router.post('dbWrite', (request, response) => {
+router.post('/dbWrite', (request, response) => {
 
   pool.query('INSERT INTO perfTest(Value) VALUES ("some random text")', (error, results, fields) => {
     if (error) {
@@ -56,7 +56,7 @@ router.post('dbWrite', (request, response) => {
 
 });
 
-router.post('dbReadWrite', (request, response) => {
+router.post('/dbReadWrite', (request, response) => {
 
   pool.query('SELECT * FROM world.city', (error, results, fields) => {
     if (error) {
@@ -77,7 +77,7 @@ router.post('dbReadWrite', (request, response) => {
 
 });
 
-router.post('file', (request, response) => {
+router.post('/file', (request, response) => {
   const result = "the very long string";
   stream.write(result + "\n", 'utf8', () => {
     response.send(result);
