@@ -29,15 +29,14 @@ const stream = fs.createWriteStream("output.txt", { flags: 'a' });
 const pool = mysql.createPool({
   connectionLimit: 10,
   host: "35.201.17.69",
-  instance: "node-microservice-perf:australia-southeast1:nodemsperf",
   user: "test",
   password: "test",
-  database: "perfDB"
+  database: "world"
 });
 
-router.post('/processDB', (request, response) => {
+router.post('dbRead', (request, response) => {
 
-  pool.query('SELECT 1 + 1 AS solution', (error, results, fields) => {
+  pool.query('SELECT * FROM world.city', (error, results, fields) => {
     if (error) {
       response.status(400).send(error);
     }
@@ -46,18 +45,39 @@ router.post('/processDB', (request, response) => {
 
 });
 
-router.post('/processFile', (request, response) => {
-  //var myPromise = new Promise((resolve, reject) => {
-  //  setTimeout(() => { resolve('result from promise') }, 5000);
-  //});
+router.post('dbWrite', (request, response) => {
 
-  //myPromise.then((result) => {
-  /*pool.query('SELECT 1 + 1 AS solution', (error, results, fields) => {
+  pool.query('INSERT INTO perfTest(Value) VALUES ("some random text")', (error, results, fields) => {
     if (error) {
       response.status(400).send(error);
     }
     response.send(results);
-  })*/
+  })
+
+});
+
+router.post('dbReadWrite', (request, response) => {
+
+  pool.query('SELECT * FROM world.city', (error, results, fields) => {
+    if (error) {
+      response.status(400).send(error);
+    }
+    pool.query('SELECT * FROM world.city', (error, results, fields) => {
+      if (error) {
+        response.status(400).send(error);
+      }
+      pool.query('INSERT INTO perfTest(Value) VALUES ("some other random text")', (error, results, fields) => {
+        if (error) {
+          response.status(400).send(error);
+        }
+        response.status(200).send("OK");
+      })
+    })
+  })
+
+});
+
+router.post('file', (request, response) => {
   const result = "the very long string";
   stream.write(result + "\n", 'utf8', () => {
     response.send(result);
